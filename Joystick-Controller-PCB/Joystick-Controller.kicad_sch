@@ -5,6 +5,408 @@
 	(uuid "73490ddf-877e-4d07-beac-145fe5218f78")
 	(paper "A4")
 	(lib_symbols
+		(symbol "COM-10302:COM-10302"
+			(pin_names
+				(offset 0.254)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "SW"
+				(at 10.16 7.62 0)
+				(effects
+					(font
+						(size 1.524 1.524)
+					)
+				)
+			)
+			(property "Value" "COM-10302"
+				(at 10.16 5.08 0)
+				(effects
+					(font
+						(size 1.524 1.524)
+					)
+				)
+			)
+			(property "Footprint" "COM-10302_SPK"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(italic yes)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "COM-10302"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(italic yes)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_locked" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "COM-10302"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "COM-10302_SPK"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "COM-10302_0_1"
+				(polyline
+					(pts
+						(xy 7.62 2.54) (xy 7.62 -5.08)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 7.62 0) (xy 8.89 0)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 7.62 -2.54) (xy 8.89 -2.54)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 7.62 -5.08) (xy 12.7 -5.08)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 8.89 1.27) (xy 11.43 1.27)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 8.89 0) (xy 8.89 1.27)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 8.89 -2.54) (xy 8.89 -3.81)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 8.89 -3.81) (xy 11.43 -3.81)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 10.16 1.27) (xy 10.16 0.3048)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 10.16 1.27)
+					(radius 0.127)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 10.16 0) (xy 8.89 -1.905)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 10.16 0)
+					(radius 0.3048)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 10.16 -2.54)
+					(radius 0.3048)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 10.16 -3.81) (xy 10.16 -2.8448)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 10.16 -3.81)
+					(radius 0.127)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 11.43 1.27) (xy 11.43 0)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 11.43 0) (xy 12.7 0)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 11.43 -2.54) (xy 12.7 -2.54)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 11.43 -3.81) (xy 11.43 -2.54)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 12.7 2.54) (xy 7.62 2.54)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 12.7 -5.08) (xy 12.7 2.54)
+					)
+					(stroke
+						(width 0.127)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin unspecified line
+					(at 0 0 0)
+					(length 7.62)
+					(name "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin unspecified line
+					(at 0 -2.54 0)
+					(length 7.62)
+					(name "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin unspecified line
+					(at 20.32 0 180)
+					(length 7.62)
+					(name "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin unspecified line
+					(at 20.32 -2.54 180)
+					(length 7.62)
+					(name "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Connector:Conn_01x03_Socket"
 			(pin_names
 				(offset 1.016)
@@ -3631,156 +4033,6 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Switch:SW_Push"
-			(pin_numbers
-				(hide yes)
-			)
-			(pin_names
-				(offset 1.016)
-				(hide yes)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "SW"
-				(at 1.27 2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "SW_Push"
-				(at 0 -1.524 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 5.08 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 5.08 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Push button switch, generic, two pins"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "switch normally-open pushbutton push-button"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "SW_Push_0_1"
-				(circle
-					(center -2.032 0)
-					(radius 0.508)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 1.27) (xy 0 3.048)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 2.032 0)
-					(radius 0.508)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 2.54 1.27) (xy -2.54 1.27)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(pin passive line
-					(at -5.08 0 0)
-					(length 2.54)
-					(name "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 5.08 0 180)
-					(length 2.54)
-					(name "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
 		(symbol "joystick:adafruit_JOYSTICKPTH"
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -4796,7 +5048,7 @@
 		(uuid "2b7272f1-9371-40e5-becb-f043af67251b")
 	)
 	(junction
-		(at 149.86 120.65)
+		(at 152.4 121.92)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "45f8a73e-d300-4258-8120-956a5e898d74")
@@ -4832,7 +5084,7 @@
 		(uuid "a508b60f-8c16-42e4-b3d3-b979aa20e4fe")
 	)
 	(junction
-		(at 118.11 120.65)
+		(at 114.3 121.92)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "ec6bafa0-6954-4803-af66-708153d8f90f")
@@ -4896,6 +5148,10 @@
 		(uuid "5dee7163-ae64-41f8-8b29-ca31ce37591c")
 	)
 	(no_connect
+		(at 114.3 101.6)
+		(uuid "5dfa8c70-91e9-4296-8632-4e870c44b6db")
+	)
+	(no_connect
 		(at 78.74 63.5)
 		(uuid "635bc1ad-8038-41dc-a1d2-01d54543fab3")
 	)
@@ -4908,6 +5164,10 @@
 		(uuid "7e2ddaa9-9963-4fb8-beb1-5f7427d52dab")
 	)
 	(no_connect
+		(at 152.4 101.6)
+		(uuid "83005dc8-ba8d-4f3a-b20e-9909b1027735")
+	)
+	(no_connect
 		(at 35.56 106.68)
 		(uuid "8684ed83-c502-4414-90b9-948a8f40017a")
 	)
@@ -4918,6 +5178,10 @@
 	(no_connect
 		(at 35.56 73.66)
 		(uuid "8aaaf90e-d3ff-42d6-9235-d7fa3483801f")
+	)
+	(no_connect
+		(at 149.86 101.6)
+		(uuid "8eec59ba-35ce-445f-90cf-ebb9af9544e4")
 	)
 	(no_connect
 		(at 234.95 81.28)
@@ -4954,6 +5218,10 @@
 	(no_connect
 		(at 78.74 86.36)
 		(uuid "e6daeba9-d273-4341-abfd-a5f9ebcdfbe7")
+	)
+	(no_connect
+		(at 111.76 101.6)
+		(uuid "ea1e8c37-0876-4750-bf8a-626f12454cc5")
 	)
 	(no_connect
 		(at 35.56 76.2)
@@ -5077,7 +5345,7 @@
 	)
 	(wire
 		(pts
-			(xy 118.11 129.54) (xy 118.11 132.08)
+			(xy 114.3 130.81) (xy 114.3 133.35)
 		)
 		(stroke
 			(width 0)
@@ -5357,7 +5625,7 @@
 	)
 	(wire
 		(pts
-			(xy 118.11 121.92) (xy 118.11 120.65)
+			(xy 114.3 123.19) (xy 114.3 121.92)
 		)
 		(stroke
 			(width 0)
@@ -5397,7 +5665,7 @@
 	)
 	(wire
 		(pts
-			(xy 149.86 121.92) (xy 149.86 120.65)
+			(xy 152.4 123.19) (xy 152.4 121.92)
 		)
 		(stroke
 			(width 0)
@@ -5477,13 +5745,23 @@
 	)
 	(wire
 		(pts
-			(xy 149.86 120.65) (xy 162.56 120.65)
+			(xy 152.4 121.92) (xy 165.1 121.92)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "6c846cfd-b881-40a3-8e4d-f4bcc6da5b9e")
+	)
+	(wire
+		(pts
+			(xy 105.41 121.92) (xy 111.76 121.92)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6d579e62-d88d-4dee-8dd2-2727c14ecb03")
 	)
 	(wire
 		(pts
@@ -5547,6 +5825,16 @@
 	)
 	(wire
 		(pts
+			(xy 143.51 121.92) (xy 149.86 121.92)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7dfc905e-7aec-4675-a4ab-48a6a78ade07")
+	)
+	(wire
+		(pts
 			(xy 35.56 93.98) (xy 27.94 93.98)
 		)
 		(stroke
@@ -5567,7 +5855,7 @@
 	)
 	(wire
 		(pts
-			(xy 118.11 120.65) (xy 118.11 119.38)
+			(xy 114.3 121.92) (xy 114.3 120.65)
 		)
 		(stroke
 			(width 0)
@@ -5647,16 +5935,6 @@
 	)
 	(wire
 		(pts
-			(xy 118.11 104.14) (xy 118.11 109.22)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "99dec924-b29e-4e5e-9218-fbf044df777c")
-	)
-	(wire
-		(pts
 			(xy 63.5 50.8) (xy 78.74 50.8)
 		)
 		(stroke
@@ -5697,7 +5975,17 @@
 	)
 	(wire
 		(pts
-			(xy 149.86 129.54) (xy 149.86 132.08)
+			(xy 105.41 116.84) (xy 105.41 121.92)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a13ff17d-d3ed-4573-9b47-d40b990f8699")
+	)
+	(wire
+		(pts
+			(xy 152.4 130.81) (xy 152.4 133.35)
 		)
 		(stroke
 			(width 0)
@@ -5977,7 +6265,7 @@
 	)
 	(wire
 		(pts
-			(xy 149.86 120.65) (xy 149.86 119.38)
+			(xy 152.4 121.92) (xy 152.4 120.65)
 		)
 		(stroke
 			(width 0)
@@ -5997,7 +6285,7 @@
 	)
 	(wire
 		(pts
-			(xy 118.11 120.65) (xy 134.62 120.65)
+			(xy 114.3 121.92) (xy 130.81 121.92)
 		)
 		(stroke
 			(width 0)
@@ -6027,7 +6315,7 @@
 	)
 	(wire
 		(pts
-			(xy 149.86 104.14) (xy 149.86 109.22)
+			(xy 143.51 116.84) (xy 143.51 121.92)
 		)
 		(stroke
 			(width 0)
@@ -6265,7 +6553,7 @@
 		)
 		(uuid "09875495-4dda-4a6e-a1c5-8494d0bdb02e")
 	)
-	(label "GPIO3"
+	(label "GPIO5"
 		(at 57.15 175.26 180)
 		(effects
 			(font
@@ -6296,7 +6584,7 @@
 		(uuid "1e3a48e6-2f7d-4e06-99ed-da3d7bee42b6")
 	)
 	(label "GPIO38"
-		(at 162.56 120.65 180)
+		(at 165.1 121.92 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6656,7 +6944,7 @@
 		(uuid "9d926f21-9f83-4f52-84f5-a80995257c28")
 	)
 	(label "GPIO39"
-		(at 134.62 120.65 180)
+		(at 130.81 121.92 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6675,7 +6963,7 @@
 		)
 		(uuid "a215b7af-f2a1-45da-bd42-a8b11c513d42")
 	)
-	(label "GPIO5"
+	(label "GPIO3"
 		(at 57.15 185.42 180)
 		(effects
 			(font
@@ -6985,7 +7273,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "joystick:JOYSTICK"
+		(property "Footprint" "footprints2:XDCR_COM-09032"
 			(at 146.05 50.8 0)
 			(effects
 				(font
@@ -7071,7 +7359,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_Tantalum_SMD:CP_EIA-2012-12_Kemet-R_HandSolder"
 			(at 226.06 33.02 0)
 			(effects
 				(font
@@ -7275,7 +7563,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x03_P2.54mm_Vertical"
 			(at 22.86 129.54 0)
 			(effects
 				(font
@@ -7478,7 +7766,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "LED_SMD:LED_RGB_5050-6"
 			(at 35.56 179.07 0)
 			(effects
 				(font
@@ -7528,7 +7816,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 118.11 132.08 0)
+		(at 114.3 133.35 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -7537,7 +7825,7 @@
 		(fields_autoplaced yes)
 		(uuid "28fabf3c-894e-4277-aeec-3786d6cbaf5c")
 		(property "Reference" "#PWR06"
-			(at 118.11 138.43 0)
+			(at 114.3 139.7 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7546,7 +7834,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 118.11 137.16 0)
+			(at 114.3 138.43 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7554,7 +7842,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 118.11 132.08 0)
+			(at 114.3 133.35 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7563,7 +7851,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 118.11 132.08 0)
+			(at 114.3 133.35 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7572,7 +7860,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 118.11 132.08 0)
+			(at 114.3 133.35 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7753,7 +8041,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x28_P2.54mm_Vertical"
 			(at 22.86 78.74 0)
 			(effects
 				(font
@@ -8032,7 +8320,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
 			(at 47.244 184.404 90)
 			(effects
 				(font
@@ -8099,7 +8387,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x09_P2.54mm_Vertical"
 			(at 245.11 52.07 0)
 			(effects
 				(font
@@ -8157,6 +8445,84 @@
 			(project ""
 				(path "/73490ddf-877e-4d07-beac-145fe5218f78"
 					(reference "J5")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "COM-10302:COM-10302")
+		(at 152.4 101.6 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "4934837a-fe4e-4f1c-be0f-6d9982207b77")
+		(property "Reference" "SW1"
+			(at 156.21 110.4899 90)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "COM-10302"
+			(at 156.21 113.0299 90)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "footprints:COM-10302_SPK"
+			(at 152.4 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "COM-10302"
+			(at 152.4 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 152.4 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "4c391e00-8dd3-4219-9f71-e93495a376f7")
+		)
+		(pin "1"
+			(uuid "b9d2675b-c561-4bf6-8c25-c61e46ba74ef")
+		)
+		(pin "3"
+			(uuid "76a7655e-6b2d-4656-bd22-4bab95a0b80d")
+		)
+		(pin "4"
+			(uuid "8d261716-f2c9-41f0-b1a6-80ae479d88da")
+		)
+		(instances
+			(project "Joystick-Controller"
+				(path "/73490ddf-877e-4d07-beac-145fe5218f78"
+					(reference "SW1")
 					(unit 1)
 				)
 			)
@@ -8296,75 +8662,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Switch:SW_Push")
-		(at 118.11 114.3 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "5f93db69-0ef5-4f6f-b6a6-1c2a8d374b05")
-		(property "Reference" "SW1"
-			(at 120.65 108.712 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Value" "COLOR_BTN"
-			(at 120.65 111.252 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" ""
-			(at 113.03 114.3 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 113.03 114.3 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Push button switch, generic, two pins"
-			(at 118.11 114.3 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "0e80f46f-65c7-4948-9253-67e14332cbae")
-		)
-		(pin "2"
-			(uuid "d8cebf29-f92f-4b2c-98f0-af5ba6a1dde7")
-		)
-		(instances
-			(project ""
-				(path "/73490ddf-877e-4d07-beac-145fe5218f78"
-					(reference "SW1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:GND")
 		(at 34.29 114.3 0)
 		(mirror y)
@@ -8433,7 +8730,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 149.86 132.08 0)
+		(at 152.4 133.35 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -8442,7 +8739,7 @@
 		(fields_autoplaced yes)
 		(uuid "709afa63-7328-4040-ad25-99d6620f101f")
 		(property "Reference" "#PWR020"
-			(at 149.86 138.43 0)
+			(at 152.4 139.7 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8451,7 +8748,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 149.86 137.16 0)
+			(at 152.4 138.43 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8459,7 +8756,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 149.86 132.08 0)
+			(at 152.4 133.35 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8468,7 +8765,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 149.86 132.08 0)
+			(at 152.4 133.35 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8477,7 +8774,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 149.86 132.08 0)
+			(at 152.4 133.35 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8523,7 +8820,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "LED_SMD:LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder"
 			(at 73.66 160.02 0)
 			(effects
 				(font
@@ -8602,7 +8899,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x04_P2.54mm_Vertical"
 			(at 58.42 127 0)
 			(effects
 				(font
@@ -8742,7 +9039,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
 			(at 47.244 179.324 90)
 			(effects
 				(font
@@ -8812,7 +9109,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
 			(at 218.186 70.104 90)
 			(effects
 				(font
@@ -8879,7 +9176,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_Tantalum_SMD:CP_EIA-2012-12_Kemet-R_HandSolder"
 			(at 226.06 38.1 0)
 			(effects
 				(font
@@ -8923,7 +9220,7 @@
 	)
 	(symbol
 		(lib_id "Device:R_US")
-		(at 149.86 125.73 0)
+		(at 152.4 127 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -8932,7 +9229,7 @@
 		(fields_autoplaced yes)
 		(uuid "935ed43e-b7c7-4845-bd14-0aab0b364243")
 		(property "Reference" "R7"
-			(at 152.4 124.4599 0)
+			(at 154.94 125.7299 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8941,7 +9238,7 @@
 			)
 		)
 		(property "Value" "1000"
-			(at 152.4 126.9999 0)
+			(at 154.94 128.2699 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8949,8 +9246,8 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
-			(at 150.876 125.984 90)
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
+			(at 153.416 127.254 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8959,7 +9256,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 149.86 125.73 0)
+			(at 152.4 127 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8968,7 +9265,7 @@
 			)
 		)
 		(property "Description" "Resistor, US symbol"
-			(at 149.86 125.73 0)
+			(at 152.4 127 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9085,7 +9382,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x05_P2.54mm_Vertical"
 			(at 245.11 76.2 0)
 			(effects
 				(font
@@ -9162,7 +9459,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
 			(at 84.074 159.004 90)
 			(effects
 				(font
@@ -9296,7 +9593,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
 			(at 45.974 159.004 90)
 			(effects
 				(font
@@ -9366,7 +9663,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x28_P2.54mm_Vertical"
 			(at 58.42 78.74 0)
 			(effects
 				(font
@@ -9690,7 +9987,7 @@
 	)
 	(symbol
 		(lib_id "power:+3V3")
-		(at 118.11 104.14 0)
+		(at 105.41 116.84 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -9699,7 +9996,7 @@
 		(fields_autoplaced yes)
 		(uuid "c340246b-9475-4c01-b7af-c87ec3a2fee5")
 		(property "Reference" "#PWR05"
-			(at 118.11 107.95 0)
+			(at 105.41 120.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9708,7 +10005,7 @@
 			)
 		)
 		(property "Value" "+3V3"
-			(at 118.11 99.06 0)
+			(at 105.41 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9716,7 +10013,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 118.11 104.14 0)
+			(at 105.41 116.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9725,7 +10022,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 118.11 104.14 0)
+			(at 105.41 116.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9734,7 +10031,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+3V3\""
-			(at 118.11 104.14 0)
+			(at 105.41 116.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9779,7 +10076,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
 			(at 47.244 174.244 90)
 			(effects
 				(font
@@ -9847,7 +10144,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Diode_SMD:D_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
 			(at 35.56 160.02 0)
 			(effects
 				(font
@@ -10034,7 +10331,7 @@
 	)
 	(symbol
 		(lib_id "Device:R_US")
-		(at 118.11 125.73 0)
+		(at 114.3 127 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -10043,7 +10340,7 @@
 		(fields_autoplaced yes)
 		(uuid "dd037fd3-10da-4461-a9bf-204bddf6c902")
 		(property "Reference" "R1"
-			(at 120.65 124.4599 0)
+			(at 116.84 125.7299 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10052,7 +10349,7 @@
 			)
 		)
 		(property "Value" "1000"
-			(at 120.65 126.9999 0)
+			(at 116.84 128.2699 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10060,8 +10357,8 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
-			(at 119.126 125.984 90)
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
+			(at 115.316 127.254 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10070,7 +10367,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 118.11 125.73 0)
+			(at 114.3 127 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10079,7 +10376,7 @@
 			)
 		)
 		(property "Description" "Resistor, US symbol"
-			(at 118.11 125.73 0)
+			(at 114.3 127 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10104,7 +10401,7 @@
 	)
 	(symbol
 		(lib_id "power:+3V3")
-		(at 149.86 104.14 0)
+		(at 143.51 116.84 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -10113,7 +10410,7 @@
 		(fields_autoplaced yes)
 		(uuid "e0b36124-a514-406b-af22-5d8f078c8fd5")
 		(property "Reference" "#PWR019"
-			(at 149.86 107.95 0)
+			(at 143.51 120.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10122,7 +10419,7 @@
 			)
 		)
 		(property "Value" "+3V3"
-			(at 149.86 99.06 0)
+			(at 143.51 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10130,7 +10427,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 149.86 104.14 0)
+			(at 143.51 116.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10139,7 +10436,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 149.86 104.14 0)
+			(at 143.51 116.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10148,7 +10445,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+3V3\""
-			(at 149.86 104.14 0)
+			(at 143.51 116.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10369,69 +10666,78 @@
 		)
 	)
 	(symbol
-		(lib_id "Switch:SW_Push")
-		(at 149.86 114.3 90)
+		(lib_id "COM-10302:COM-10302")
+		(at 114.3 101.6 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "f00f42c5-f2ff-4d3b-ba3c-04abd4e2b082")
-		(property "Reference" "SW2"
-			(at 150.876 107.442 90)
+		(fields_autoplaced yes)
+		(uuid "f2d3a5f6-8c1c-47be-9589-cbb3f09d846a")
+		(property "Reference" "SW3"
+			(at 118.11 110.4899 90)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "COM-10302"
+			(at 118.11 113.0299 90)
+			(effects
+				(font
+					(size 1.524 1.524)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "footprints:COM-10302_SPK"
+			(at 114.3 101.6 0)
 			(effects
 				(font
 					(size 1.27 1.27)
+					(italic yes)
 				)
-				(justify right)
+				(hide yes)
 			)
 		)
-		(property "Value" "SAVE_BTN"
-			(at 150.876 109.982 90)
+		(property "Datasheet" "COM-10302"
+			(at 114.3 101.6 0)
 			(effects
 				(font
 					(size 1.27 1.27)
+					(italic yes)
 				)
-				(justify right)
+				(hide yes)
 			)
 		)
-		(property "Footprint" ""
-			(at 144.78 114.3 0)
+		(property "Description" ""
+			(at 114.3 101.6 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(hide yes)
 			)
-		)
-		(property "Datasheet" "~"
-			(at 144.78 114.3 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Push button switch, generic, two pins"
-			(at 149.86 114.3 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "36512860-d19a-4782-bfac-9734a4746e32")
 		)
 		(pin "2"
-			(uuid "d30a67f9-c324-4274-996c-b964a89de86e")
+			(uuid "c0d068c8-8437-42c3-b469-102b2356a213")
+		)
+		(pin "1"
+			(uuid "9a1684a3-fe68-4567-97a8-e35f012cea28")
+		)
+		(pin "3"
+			(uuid "e7572adb-18c3-4927-9a04-486ba5627b42")
+		)
+		(pin "4"
+			(uuid "f7e6bd97-ed7b-4f15-b4dd-a640f43503cb")
 		)
 		(instances
-			(project "Joystick-Controller"
+			(project ""
 				(path "/73490ddf-877e-4d07-beac-145fe5218f78"
-					(reference "SW2")
+					(reference "SW3")
 					(unit 1)
 				)
 			)
