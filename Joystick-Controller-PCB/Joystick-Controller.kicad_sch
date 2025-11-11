@@ -5036,6 +5036,12 @@
 		(uuid "fb380a4b-15a9-46b3-8886-09d6e562fffe")
 	)
 	(junction
+		(at 152.4 121.92)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "10106646-70dd-44d4-ab26-449e2c81b9dc")
+	)
+	(junction
 		(at 233.68 33.02)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -5046,12 +5052,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "2b7272f1-9371-40e5-becb-f043af67251b")
-	)
-	(junction
-		(at 152.4 121.92)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "45f8a73e-d300-4258-8120-956a5e898d74")
 	)
 	(junction
 		(at 133.35 55.88)
@@ -5084,10 +5084,10 @@
 		(uuid "a508b60f-8c16-42e4-b3d3-b979aa20e4fe")
 	)
 	(junction
-		(at 114.3 121.92)
+		(at 114.3 123.19)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "ec6bafa0-6954-4803-af66-708153d8f90f")
+		(uuid "d3a76ab8-72df-4e48-b03b-f2e0b8151e7c")
 	)
 	(junction
 		(at 233.68 41.91)
@@ -5164,7 +5164,7 @@
 		(uuid "7e2ddaa9-9963-4fb8-beb1-5f7427d52dab")
 	)
 	(no_connect
-		(at 152.4 101.6)
+		(at 152.4 100.33)
 		(uuid "83005dc8-ba8d-4f3a-b20e-9909b1027735")
 	)
 	(no_connect
@@ -5180,7 +5180,7 @@
 		(uuid "8aaaf90e-d3ff-42d6-9235-d7fa3483801f")
 	)
 	(no_connect
-		(at 149.86 101.6)
+		(at 149.86 100.33)
 		(uuid "8eec59ba-35ce-445f-90cf-ebb9af9544e4")
 	)
 	(no_connect
@@ -5625,16 +5625,6 @@
 	)
 	(wire
 		(pts
-			(xy 114.3 123.19) (xy 114.3 121.92)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5bb4e972-e1e9-4cef-b6f8-aa4837ae6126")
-	)
-	(wire
-		(pts
 			(xy 87.63 160.02) (xy 90.17 160.02)
 		)
 		(stroke
@@ -5825,7 +5815,7 @@
 	)
 	(wire
 		(pts
-			(xy 143.51 121.92) (xy 149.86 121.92)
+			(xy 143.51 120.65) (xy 149.86 120.65)
 		)
 		(stroke
 			(width 0)
@@ -5855,13 +5845,13 @@
 	)
 	(wire
 		(pts
-			(xy 114.3 121.92) (xy 114.3 120.65)
+			(xy 114.3 123.19) (xy 114.3 121.92)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "86618f29-9b77-4dfd-b117-71e28be67110")
+		(uuid "8c95c5ce-bb63-453b-8d13-90bf947a42f7")
 	)
 	(wire
 		(pts
@@ -6135,6 +6125,16 @@
 	)
 	(wire
 		(pts
+			(xy 152.4 120.65) (xy 152.4 121.92)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b910375f-b620-402a-ba20-900f22375ead")
+	)
+	(wire
+		(pts
 			(xy 116.84 60.96) (xy 135.89 60.96)
 		)
 		(stroke
@@ -6265,16 +6265,6 @@
 	)
 	(wire
 		(pts
-			(xy 152.4 121.92) (xy 152.4 120.65)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "cfce68ca-17f9-4b9d-9e41-cd0f4599072f")
-	)
-	(wire
-		(pts
 			(xy 133.35 55.88) (xy 135.89 55.88)
 		)
 		(stroke
@@ -6285,7 +6275,7 @@
 	)
 	(wire
 		(pts
-			(xy 114.3 121.92) (xy 130.81 121.92)
+			(xy 114.3 123.19) (xy 130.81 123.19)
 		)
 		(stroke
 			(width 0)
@@ -6315,7 +6305,7 @@
 	)
 	(wire
 		(pts
-			(xy 143.51 116.84) (xy 143.51 121.92)
+			(xy 143.51 116.84) (xy 143.51 120.65)
 		)
 		(stroke
 			(width 0)
@@ -6944,7 +6934,7 @@
 		(uuid "9d926f21-9f83-4f52-84f5-a80995257c28")
 	)
 	(label "GPIO39"
-		(at 130.81 121.92 180)
+		(at 130.81 123.19 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8452,7 +8442,7 @@
 	)
 	(symbol
 		(lib_id "COM-10302:COM-10302")
-		(at 152.4 101.6 270)
+		(at 152.4 100.33 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -8461,7 +8451,7 @@
 		(fields_autoplaced yes)
 		(uuid "4934837a-fe4e-4f1c-be0f-6d9982207b77")
 		(property "Reference" "SW1"
-			(at 156.21 110.4899 90)
+			(at 156.21 109.2199 90)
 			(effects
 				(font
 					(size 1.524 1.524)
@@ -8470,7 +8460,7 @@
 			)
 		)
 		(property "Value" "COM-10302"
-			(at 156.21 113.0299 90)
+			(at 156.21 111.7599 90)
 			(effects
 				(font
 					(size 1.524 1.524)
@@ -8479,7 +8469,7 @@
 			)
 		)
 		(property "Footprint" "footprints:COM-10302_SPK"
-			(at 152.4 101.6 0)
+			(at 152.4 100.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8489,7 +8479,7 @@
 			)
 		)
 		(property "Datasheet" "COM-10302"
-			(at 152.4 101.6 0)
+			(at 152.4 100.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8499,7 +8489,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 152.4 101.6 0)
+			(at 152.4 100.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
