@@ -4,4 +4,5 @@
   (lib (name "joystick-eagle-import")(type "KiCad")(uri "${KIPRJMOD}/joystick-eagle-import.kicad_sym")(options "")(descr ""))
   (lib (name "COM-10302")(type "KiCad")(uri "${KIPRJMOD}/ul_COM-10302/KiCADv6/2025-11-10_03-58-44.kicad_sym")(options "")(descr ""))
   (lib (name "B3F-4055")(type "KiCad")(uri "${KIPRJMOD}/B3F_4055/B3F-4055.kicad_sym")(options "")(descr ""))
+  (lib (name "SMD-6P,1.6x1.5mm RGB LEDs")(type "EasyEDA (JLCEDA) Pro")(uri "${KIPRJMOD}/ProLib_pcs_2025-11-13.elibz")(options "")(descr ""))
 )
