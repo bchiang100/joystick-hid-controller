@@ -11,9 +11,13 @@
 #define PIN_CS     17
 #define PIN_SCK    18
 #define PIN_DC     16
-#define PIN_nRESET 20
+#define PIN_nRESET 15
 
-#define MOVEMENT_SPEED 2
+#define PIN_X_OUT 40
+#define PIN_Y_OUT 41
+#define PIN_JOYSTICK_BTN 20
+
+#define MOVEMENT_SPEED 1
 // tft resolution: 240 x 320
 uint16_t cursor_x = 120; 
 uint16_t cursor_y = 160;
@@ -36,7 +40,6 @@ bool is_drawing = true;
 
 /****************************************** */
 #ifdef DRAW
-#include "images.h"
 #endif
 /****************************************** */
 
@@ -57,79 +60,73 @@ void init_spi_lcd() {
     gpio_set_function(PIN_SCK, GPIO_FUNC_SPI);
     gpio_set_function(PIN_SDI, GPIO_FUNC_SPI);
     spi_init(spi0, 100 * 1000 * 1000);
-    spi_set_format(spi1, 8, SPI_CPOL_0, SPI_CPHA_0, SPI_MSB_FIRST);
+    spi_set_format(spi0, 8, SPI_CPOL_0, SPI_CPHA_0, SPI_MSB_FIRST);
 }
 
 void init_joystick() {
     adc_init();
+    adc_set_temp_sensor_enabled(false);
     
-    adc_gpio_init(26);  // x-axis
-    adc_gpio_init(27);  // y-axis
+    adc_gpio_init(PIN_X_OUT);  // x-axis
+    adc_gpio_init(PIN_Y_OUT);  // y-axis
     
-    gpio_init(15); // joystick button
-    gpio_set_dir(15, GPIO_IN);
+    for (int i = 0; i < 20; i++) {
+        adc_select_input(0);
+        adc_read();
+        adc_select_input(1);
+        adc_read();
+        sleep_ms(10);
+    }
+    
+    gpio_init(PIN_JOYSTICK_BTN); // joystick button
+    gpio_set_dir(PIN_JOYSTICK_BTN, GPIO_IN);
+    gpio_pull_up(PIN_JOYSTICK_BTN); // button is now active low
 }
 
 void update_cursor() {
     // x-axis
     adc_select_input(0);  // channel 0
+    sleep_us(10);
     uint16_t adc_x = adc_read();
     
     // y-axis
     adc_select_input(1);  // channel 1
+    sleep_us(10);
     uint16_t adc_y = adc_read();
     
-    // schmitt trigger like implementation w/ hysterisis
-    #define THRES_LOW   1800
-    #define THRES_HIGH  2300
+    // adc debugging
+    printf("ADC - X: %d, Y: %d\n", adc_x, adc_y);
     
-    // state variables to keep track due to hysterisis
-    static int8_t x_state = 0;  // -1=left, 0=neutral, 1=right
-    static int8_t y_state = 0;  // -1=up, 0=neutral, 1=down
+    static int16_t x_state = 0;  // -1=left, 0=neutral, 1=right
+    static int16_t y_state = 0;  // -1=up, 0=neutral, 1=down
     
     // x-axis logic
-    if (adc_x < THRES_LOW) {
+    if (adc_x < 1900) {
         x_state = -1;  // moves left
-    } else if (adc_x > THRES_HIGH) {
+    } else if (adc_x > 2120) {
         x_state = 1;   // moves right
     } else {
-        // within deadzone range
-        if (x_state == -1 && adc_x > THRES_HIGH) {
-            x_state = 0;
-        } else if (x_state == 1 && adc_x < THRES_LOW) {
-            x_state = 0;
-        }
+        x_state = 0;
     }
-    
+
     // y-axis logic
-    if (adc_y < THRES_LOW) {
+    if (adc_y < 1900) {
         y_state = -1;  // moves up
-    } else if (adc_y > THRES_HIGH) {
+    } else if (adc_y > 2120) {
         y_state = 1;   // moves down
     } else {
-        // within deadzone range
-        if (y_state == -1 && adc_y > THRES_HIGH) {
-            y_state = 0;
-        } else if (y_state == 1 && adc_y < THRES_LOW) {
-            y_state = 0;
-        }
+        y_state = 0;
     }
     
     // Apply movement based on state
-    if (x_state == -1) cursor_x -= MOVEMENT_SPEED;
-    if (x_state == 1)  cursor_x += MOVEMENT_SPEED;
-    if (y_state == -1) cursor_y -= MOVEMENT_SPEED;
-    if (y_state == 1)  cursor_y += MOVEMENT_SPEED;
+    if (x_state == -1 && cursor_x > 0) cursor_x -= MOVEMENT_SPEED;
+    if (x_state == 1 && cursor_x < 239) cursor_x += MOVEMENT_SPEED;
+    if (y_state == -1 && cursor_y > 0) cursor_y -= MOVEMENT_SPEED;
+    if (y_state == 1 && cursor_y < 319) cursor_y += MOVEMENT_SPEED;
     
-    // keeps cursor within bounds
-    if (cursor_x > 240) cursor_x = 0;
-    if (cursor_x >= 240) cursor_x = 239;
-    if (cursor_y > 320) cursor_y = 0;
-    if (cursor_y >= 320) cursor_y = 319;
+    // debug statement
+    printf("Cursor - X: %d, Y: %d\n", cursor_x, cursor_y);
 }
-
-Picture* load_image(const char* image_data);
-void free_image(Picture* pic);
 
 int main() {
     stdio_init_all();
@@ -140,64 +137,39 @@ int main() {
     LCD_Clear(0x0000); // Clear the screen to black
 
     #ifndef DRAW
-    
+
+    init_joystick();
 
     #define WHITE 0xFFFF
     #define RED   0xF800
-    
-    LCD_DrawPoint(120, 160, WHITE);
-    LCD_DrawPoint(100, 100, RED);
-    LCD_DrawPoint(140, 200, RED);
-    LCD_DrawPoint(210, 50, RED);
-    
+
     while(1) {
-        sleep_ms(1000);
-    }
-    
-    #endif
-    
-    /*
-        Now, for some more fun!
-
-        Uncomment the DRAW #define at the top of main.c 
-        to run this section.
+        update_cursor();
         
-        We've converted a popular GIF into a series of images, 
-        and stored each of those frames in its own C array.  
-        Look at the lab for the script we wrote to do this.
+        if (gpio_get(20) == 0) {
+            is_drawing = !is_drawing;
+            printf("Drawing mode: %d\n", is_drawing);
+            sleep_ms(500);  // debouncing delay
 
-        This is an example of how you can draw a very large picture, 
-        but notice how slow the DRAW is, even at 100 MHz.  
-        The LCD_DrawPicture function is not really intended for such 
-        large images, but it will be very helpful for smaller ones, 
-        like scary monsters and nice sprites in a game.
-    */ 
+        }
+        
+        if (is_drawing) {
+            LCD_DrawPoint(cursor_x, cursor_y, WHITE);
+        } else {
+            // erases previous cursor position
+            if (prev_x != cursor_x || prev_y != cursor_y) {
+                LCD_DrawPoint(prev_x, prev_y, 0);
+            }
+            // draws new cursor position (red cursor when not drawing)
+            LCD_DrawPoint(cursor_x, cursor_y, RED);
+        }
+        
+        // updates positions
+        prev_x = cursor_x;
+        prev_y = cursor_y;
 
-    #ifdef DRAW
-    Picture* frame_pic = NULL;
-    int frame_index = 0;
-    while (1) { // Loop forever
-        // Get the next frame from the array
-        frame_pic = load_image(mystery_frames[frame_index]);
-    
-        if (frame_pic) {
-            // Draw the frame to the top-left corner of the screen
-            LCD_DrawPicture(0, 0, frame_pic);
-            
-            // Free the Picture struct (not the pixel data)
-            free_image(frame_pic);
-        }
-    
-        // Move to the next frame, looping back to the start
-        frame_index++;
-        if (frame_index >= mystery_frame_count) {
-            frame_index = 0;
-        }
-    
-        // Add a small delay to control DRAW speed
-        sleep_ms(1); // Adjust delay as needed
+        sleep_ms(10);
     }
     #endif
-
     for(;;);
 }
