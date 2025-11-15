@@ -117,11 +117,11 @@ void init_joystick() {
 void init_color_buttons() {
     gpio_init(PIN_PREV_BTN);
     gpio_set_dir(PIN_PREV_BTN, GPIO_IN);
-    gpio_pull_up(PIN_PREV_BTN);  // Active low
+    //gpio_pull_up(PIN_PREV_BTN);  // Active low
     
     gpio_init(PIN_NEXT_BTN);
     gpio_set_dir(PIN_NEXT_BTN, GPIO_IN);
-    gpio_pull_up(PIN_NEXT_BTN);  // Active low
+    //gpio_pull_up(PIN_NEXT_BTN);  // Active low
 }
 
 void update_cursor() {
@@ -136,7 +136,7 @@ void update_cursor() {
     uint16_t adc_y = adc_read();
     
     // adc debugging
-    printf("ADC - X: %d, Y: %d\n", adc_x, adc_y);
+    //printf("ADC - X: %d, Y: %d\n", adc_x, adc_y);
     
     static int16_t x_state = 0;
     static int16_t y_state = 0;
@@ -164,8 +164,8 @@ void update_cursor() {
     
     if (x_state == -1 && new_x > 0) new_x -= MOVEMENT_SPEED;
     if (x_state == 1 && new_x < WIDTH - MOVEMENT_SPEED) new_x += MOVEMENT_SPEED;
-    if (y_state == -1 && new_y > 0) new_y -= MOVEMENT_SPEED;
-    if (y_state == 1 && new_y < HEIGHT - MOVEMENT_SPEED) new_y += MOVEMENT_SPEED;
+    if (y_state == -1 && new_y > 0) new_y += MOVEMENT_SPEED;
+    if (y_state == 1 && new_y < HEIGHT - MOVEMENT_SPEED) new_y -= MOVEMENT_SPEED;
     
     if (!((new_x >= TASKBAR_X1 && new_x <= TASKBAR_X2) && (new_y >= TASKBAR_Y1 && new_y <= TASKBAR_Y2))) {
         cursor_x = new_x;
@@ -173,7 +173,7 @@ void update_cursor() {
     }
     
     // debug statement
-    printf("Cursor - X: %d, Y: %d\n", cursor_x, cursor_y);
+    //printf("Cursor - X: %d, Y: %d\n", cursor_x, cursor_y);
 }
 
 void draw_taskbar() {
@@ -206,7 +206,7 @@ void color_select() {
         current_color = colors[selected_color];
         draw_taskbar();
         prev_next_pressed = true;
-        sleep_ms(200);
+        sleep_ms(50);
     } else if (gpio_get(PIN_NEXT_BTN) == 1) {
         prev_next_pressed = false;
     }
@@ -219,7 +219,7 @@ void color_select() {
         current_color = colors[selected_color];
         draw_taskbar();
         prev_prev_pressed = true;
-        sleep_ms(200);
+        sleep_ms(50);
     } else if (gpio_get(PIN_PREV_BTN) == 1) {
         prev_prev_pressed = false;
     }
@@ -243,7 +243,7 @@ int main() {
         
         if (gpio_get(20) == 0) {
             is_drawing = !is_drawing;
-            printf("Drawing mode: %d\n", is_drawing);
+            //printf("Drawing mode: %d\n", is_drawing);
             sleep_ms(500);
         }
         
