@@ -10,9 +10,19 @@
 // add hysterisis deadzone logic: done
 // add cursor and draw modes: done
 // implement taskbar: done
-// implement different colors: in progress
-// add color selector: in progress
+// implement different colors & color selector: done
+// create UI - done
+// fix cursor & drawing overlap (hovering cursor over existing drawing deletes it) - not started
+// add RGB led integration: not started
+
+// bonus - implement more advanced mouse move states: not started
 // bonus - add pen icon: not started
+// bonus - save/load drawing from SD card - not started
+
+// additional ideas:
+// add random spray paint effect
+// add undo mode
+// implement shape tools
 
 #define PIN_SDI    19
 #define PIN_CS     17
@@ -23,11 +33,12 @@
 #define PIN_X_OUT 40
 #define PIN_Y_OUT 41
 #define PIN_JOYSTICK_BTN 20
-#define PIN_PREV_BTN 38
-#define PIN_NEXT_BTN 39
+//#define PIN_PREV_BTN 38
+#define PIN_NEXT_BTN 38
+#define RESET 39
 #define SELECTOR_COLOR 0x01FF
 
-#define DEADZONE_RADIUS 300
+#define DEADZONE_RADIUS 500
 #define MOVEMENT_SPEED 1
 
 #define WIDTH 240
@@ -111,31 +122,30 @@ void init_joystick() {
     
     gpio_init(PIN_JOYSTICK_BTN); // joystick button
     gpio_set_dir(PIN_JOYSTICK_BTN, GPIO_IN);
-    gpio_pull_up(PIN_JOYSTICK_BTN); // button is now active low
+    gpio_pull_up(PIN_JOYSTICK_BTN);
 }
 
 void init_color_buttons() {
-    gpio_init(PIN_PREV_BTN);
-    gpio_set_dir(PIN_PREV_BTN, GPIO_IN);
-    //gpio_pull_up(PIN_PREV_BTN);  // Active low
+    // push buttons are in active low configuration for better reliability
+    gpio_init(RESET);
+    gpio_set_dir(RESET, GPIO_IN);
     
     gpio_init(PIN_NEXT_BTN);
     gpio_set_dir(PIN_NEXT_BTN, GPIO_IN);
-    //gpio_pull_up(PIN_NEXT_BTN);  // Active low
 }
 
 void update_cursor() {
-    // x-axis
+    // y-axis (swapped from x to conform with pcb design)
     adc_select_input(0);
-    sleep_us(10);
-    uint16_t adc_x = adc_read();
-    
-    // y-axis
-    adc_select_input(1);
     sleep_us(10);
     uint16_t adc_y = adc_read();
     
-    // adc debugging
+    // x-axis (swapped from y to conform with pcb design)
+    adc_select_input(1);
+    sleep_us(10);
+    uint16_t adc_x = adc_read();
+    
+    // adc debugging - uncomment to print out adc values
     //printf("ADC - X: %d, Y: %d\n", adc_x, adc_y);
     
     static int16_t x_state = 0;
@@ -164,8 +174,8 @@ void update_cursor() {
     
     if (x_state == -1 && new_x > 0) new_x -= MOVEMENT_SPEED;
     if (x_state == 1 && new_x < WIDTH - MOVEMENT_SPEED) new_x += MOVEMENT_SPEED;
-    if (y_state == -1 && new_y > 0) new_y += MOVEMENT_SPEED;
-    if (y_state == 1 && new_y < HEIGHT - MOVEMENT_SPEED) new_y -= MOVEMENT_SPEED;
+    if (y_state == -1 && new_y > 0) new_y -= MOVEMENT_SPEED;
+    if (y_state == 1 && new_y < HEIGHT - MOVEMENT_SPEED) new_y += MOVEMENT_SPEED;
     
     if (!((new_x >= TASKBAR_X1 && new_x <= TASKBAR_X2) && (new_y >= TASKBAR_Y1 && new_y <= TASKBAR_Y2))) {
         cursor_x = new_x;
@@ -196,7 +206,7 @@ void draw_taskbar() {
 
 void color_select() {
     static bool prev_next_pressed = false;
-    static bool prev_prev_pressed = false;
+    //static bool prev_prev_pressed = false;
     
     if (gpio_get(PIN_NEXT_BTN) == 0 && !prev_next_pressed) {
         selected_color++;
@@ -211,23 +221,54 @@ void color_select() {
         prev_next_pressed = false;
     }
     
-    if (gpio_get(PIN_PREV_BTN) == 0 && !prev_prev_pressed) {
-        selected_color--;
-        if (selected_color < 0) {
-            selected_color = NUM_COLORS - 1;
+    // previous button logic - replaced with reset button 
+
+    // if (gpio_get(PIN_PREV_BTN) == 0 && !prev_prev_pressed) {
+    //     selected_color--;
+    //     if (selected_color < 0) {
+    //         selected_color = NUM_COLORS - 1;
+    //     }
+    //     current_color = colors[selected_color];
+    //     draw_taskbar();
+    //     prev_prev_pressed = true;
+    //     sleep_ms(50);
+    // } else if (gpio_get(PIN_PREV_BTN) == 1) {
+    //     prev_prev_pressed = false;
+    // }
+}
+
+void clear_screen() {
+    LCD_DrawFillRectangle(0, TASKBAR_Y2 + 1, WIDTH - 1, HEIGHT - 1, BLACK); // clears area of screen below taskbar
+    LCD_DrawFillRectangle(0, 0, TASKBAR_X1, TASKBAR_Y2, BLACK); // clears left side of taskbar
+    LCD_DrawFillRectangle(TASKBAR_X2, TASKBAR_Y1, WIDTH - 1, HEIGHT - 1, BLACK); // clears right side of taskbar
+}
+
+void display_initial_message() {
+    do {
+        LCD_DrawString(73, 150, WHITE, BLACK, "PixelArt Pro+", 16, 0);
+        LCD_DrawString(85, 170, WHITE, BLACK, "Press to Draw", 12, 0);
+    } while (gpio_get(PIN_NEXT_BTN) == 1 && gpio_get(RESET) == 1);
+
+    clear_screen();
+}
+
+void display_mode(bool is_drawing) {
+    static int prev_mode = -1;
+    if (is_drawing != prev_mode) {
+        LCD_DrawFillRectangle(37, 300, 100, 312, BLACK);
+        LCD_DrawString(5, 300, WHITE, BLACK, "Mode:", 12, 0);
+        if (!is_drawing) {
+            LCD_DrawString(37, 300, WHITE, BLACK, "Cursor", 12, 0);
+        } else {
+            LCD_DrawString(37, 300, WHITE, BLACK, "Draw", 12, 0);
         }
-        current_color = colors[selected_color];
-        draw_taskbar();
-        prev_prev_pressed = true;
-        sleep_ms(50);
-    } else if (gpio_get(PIN_PREV_BTN) == 1) {
-        prev_prev_pressed = false;
+        
+        prev_mode = is_drawing;
     }
 }
 
 int main() {
     stdio_init_all();
-
     init_spi_lcd();
 
     LCD_Setup();
@@ -237,14 +278,16 @@ int main() {
     init_color_buttons();
     draw_taskbar();
 
+    display_initial_message();
+    display_mode(is_drawing);
     while(1) {
         update_cursor();
         color_select();
         
         if (gpio_get(20) == 0) {
             is_drawing = !is_drawing;
-            //printf("Drawing mode: %d\n", is_drawing);
-            sleep_ms(500);
+            display_mode(is_drawing);
+            sleep_ms(300);
         }
         
         if (is_drawing) {
@@ -263,6 +306,13 @@ int main() {
         prev_x = cursor_x;
         prev_y = cursor_y;
 
+        if (gpio_get(RESET) == 0) { // reset button is pressed
+            clear_screen();
+
+            // forces display to redraw by resetting prev_mode
+            display_mode(!is_drawing);
+            display_mode(is_drawing);
+        }
         sleep_ms(10);
     }
 }
