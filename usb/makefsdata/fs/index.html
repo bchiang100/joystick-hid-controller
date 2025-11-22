@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Temperature</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Open Sans', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            font-size: 3em;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="temp">Temperature: -- °C</h1>
+    <script>
+        async function updateTemp() {
+            try {
+                const response = await fetch('/sample.cgi');
+                const temp = await response.text();
+                document.getElementById('temp').textContent = `Temperature: ${temp} °C`;
+            } catch (e) {
+                document.getElementById('temp').textContent = 'Temperature: -- °C';
+            }
+        }
+        setInterval(updateTemp, 100);
+        updateTemp();
+    </script>
+</body>
+</html>
