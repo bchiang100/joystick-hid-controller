@@ -184,39 +184,6 @@ void update_cursor() {
     //printf("Cursor - X: %d, Y: %d\n", cursor_x, cursor_y);
 }
 
-void color_select() {
-    static bool prev_next_pressed = false;
-    //static bool prev_prev_pressed = false;
-    
-    if (gpio_get(PIN_NEXT_BTN) == 0 && !prev_next_pressed) {
-        selected_color++;
-        if (selected_color >= NUM_COLORS) {
-            selected_color = 0;
-        }
-        current_color = colors[selected_color];
-        draw_taskbar();
-        prev_next_pressed = true;
-        sleep_ms(50);
-    } else if (gpio_get(PIN_NEXT_BTN) == 1) {
-        prev_next_pressed = false;
-    }
-    
-    // previous button logic - replaced with reset button 
-
-    // if (gpio_get(PIN_PREV_BTN) == 0 && !prev_prev_pressed) {
-    //     selected_color--;
-    //     if (selected_color < 0) {
-    //         selected_color = NUM_COLORS - 1;
-    //     }
-    //     current_color = colors[selected_color];
-    //     draw_taskbar();
-    //     prev_prev_pressed = true;
-    //     sleep_ms(50);
-    // } else if (gpio_get(PIN_PREV_BTN) == 1) {
-    //     prev_prev_pressed = false;
-    // }
-}
-
 
 //--------------------------------------------------------------------+
 // MACRO CONSTANT TYPEDEF PROTYPES
