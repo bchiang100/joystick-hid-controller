@@ -54,136 +54,166 @@ try changing the first byte of tud_network_mac_address[] below from 0x02 to 0x00
 #include "hardware/irq.h"
 #include "hardware/adc.h"
 #include "hardware/gpio.h"
+#include "hardware/timer.h"
+#include "stdio.h"
 
-#include "device/usbd.h"
-#include "bsp/board_api.h"
+#include "hardware/pwm.h"
+
+//#include "device/usbd.h"
+//#include "bsp/board_api.h"
 #include "tusb.h"
 
 #include "usb_descriptors.h"
 
-#include "dhserver.h"
-#include "dnserver.h"
-#include "lwip/apps/httpd.h"
-#include "lwip/ethip6.h"
-#include "lwip/init.h"
-#include "lwip/timeouts.h"
+// --- TFT Lab hardware pins reused ---
+#define PIN_X_OUT          40  // Joystick Y -> ADC0
+#define PIN_Y_OUT          41  // Joystick X -> ADC1
+#define PIN_JOYSTICK_BTN   20  // Middle click (active-low)
 
+#define PIN_LEFT_BTN       38  // Left click (active-low)
+#define PIN_RIGHT_BTN      39  // Right click (active-low)
 
-#define PIN_X_OUT 40
-#define PIN_Y_OUT 41
-#define PIN_JOYSTICK_BTN 20
+#define DEADZONE_RADIUS    500
+#define MOVEMENT_SPEED     1
 
-#define PIN_NEXT_BTN 38
-#define RESET 39
+// pin was originally assigned to user led
+#define USER_LED          2
 
-#define DEADZONE_RADIUS 500
-#define MOVEMENT_SPEED 1
+#define RGB_R_PIN         3
+#define RGB_G_PIN         4
+#define RGB_B_PIN         5
 
-#define WIDTH 240
-#define HEIGHT 320
-#define CENTER_X (WIDTH / 2)
-#define CENTER_Y (HEIGHT / 2)
-
-// tft resolution: 240 x 320
-uint16_t cursor_x = CENTER_X; 
-uint16_t cursor_y = CENTER_Y;
+static int duty_cycle = 0;
+static int dir = 0;
+static int color = 0;
 
 //--------------------------------------------------------------------+
 // Joystick and Buttons Implementation
 //--------------------------------------------------------------------+
 
-void init_joystick() {
+static void init_joystick(void)
+{
     adc_init();
-    
-    adc_gpio_init(PIN_X_OUT);  // x-axis
-    adc_gpio_init(PIN_Y_OUT);  // y-axis
-    
+    adc_gpio_init(PIN_X_OUT);
+    adc_gpio_init(PIN_Y_OUT);
+
     for (int i = 0; i < 20; i++) {
-        adc_select_input(0);
+        adc_select_input(0); 
         adc_read();
-        adc_select_input(1);
+        adc_select_input(1); 
         adc_read();
         sleep_ms(10);
     }
-    
-    gpio_init(PIN_JOYSTICK_BTN); // joystick button
+}
+
+static void init_buttons(void)
+{
+    gpio_init(PIN_JOYSTICK_BTN);
     gpio_set_dir(PIN_JOYSTICK_BTN, GPIO_IN);
     gpio_pull_up(PIN_JOYSTICK_BTN);
-}
 
-void init_color_buttons() {
-    // push buttons are in active low configuration for better reliability
-    gpio_init(RESET);
-    gpio_set_dir(RESET, GPIO_IN);
+    gpio_init(PIN_LEFT_BTN);
+    gpio_set_dir(PIN_LEFT_BTN, GPIO_IN);
     
-    gpio_init(PIN_NEXT_BTN);
-    gpio_set_dir(PIN_NEXT_BTN, GPIO_IN);
+
+    gpio_init(PIN_RIGHT_BTN);
+    gpio_set_dir(PIN_RIGHT_BTN, GPIO_IN);
+    
 }
 
-void update_cursor() {
-    // y-axis (swapped from x to conform with pcb design)
+static void read_joystick(int8_t *dx_out, int8_t *dy_out)
+{
     adc_select_input(0);
     sleep_us(10);
     uint16_t adc_y = adc_read();
-    
-    // x-axis (swapped from y to conform with pcb design)
+
     adc_select_input(1);
     sleep_us(10);
     uint16_t adc_x = adc_read();
-    
-    // adc debugging - uncomment to print out adc values
-    //printf("ADC - X: %d, Y: %d\n", adc_x, adc_y);
-    
-    static int16_t x_state = 0;
-    static int16_t y_state = 0;
-    
-    // x-axis logic
-    if (adc_x < 2048 - DEADZONE_RADIUS) {
-        x_state = -1;
-    } else if (adc_x > 2048 + DEADZONE_RADIUS) {
-        x_state = 1;
-    } else {
-        x_state = 0;
-    }
-    
-    // y-axis logic
-    if (adc_y < 2048 - DEADZONE_RADIUS) {
-        y_state = -1;
-    } else if (adc_y > 2048 + DEADZONE_RADIUS) {
-        y_state = 1;
-    } else {
-        y_state = 0;
-    }    
-    
-    uint16_t new_x = cursor_x;
-    uint16_t new_y = cursor_y;
 
-    // add in bound checking?
-    if (x_state == -1) new_x -= MOVEMENT_SPEED;
-    if (x_state == 1) new_x += MOVEMENT_SPEED;
-    if (y_state == -1) new_y -= MOVEMENT_SPEED;
-    if (y_state == 1) new_y += MOVEMENT_SPEED;
+    int8_t dx = 0, dy = 0;
 
-    cursor_x = new_x;
-    cursor_y = new_y;
-    
-    // checking if cursor is in bounds of the tft
-    /*
-    if (x_state == -1 && new_x > 0) new_x -= MOVEMENT_SPEED;
-    if (x_state == 1 && new_x < WIDTH - MOVEMENT_SPEED) new_x += MOVEMENT_SPEED;
-    if (y_state == -1 && new_y > 0) new_y -= MOVEMENT_SPEED;
-    if (y_state == 1 && new_y < HEIGHT - MOVEMENT_SPEED) new_y += MOVEMENT_SPEED;
-    
-    if (!((new_x >= TASKBAR_X1 && new_x <= TASKBAR_X2) && (new_y >= TASKBAR_Y1 && new_y <= TASKBAR_Y2))) {
-        cursor_x = new_x;
-        cursor_y = new_y;
-    }
-    */
-    
-    // debug statement
-    //printf("Cursor - X: %d, Y: %d\n", cursor_x, cursor_y);
+    if (adc_x < 2048 - DEADZONE_RADIUS) dx = -MOVEMENT_SPEED;
+    else if (adc_x > 2048 + DEADZONE_RADIUS) dx = MOVEMENT_SPEED;
+
+    if (adc_y < 2048 - DEADZONE_RADIUS) dy = -MOVEMENT_SPEED;
+    else if (adc_y > 2048 + DEADZONE_RADIUS) dy = MOVEMENT_SPEED;
+
+    dy = -dy; // push up -> cursor up
+
+    *dx_out = dx;
+    *dy_out = dy;
 }
 
+//--------------------------------------------------------------------+
+// USER LED
+//--------------------------------------------------------------------+
+void init_user_led() {
+    // initialize user led
+    gpio_init(USER_LED);
+    gpio_set_dir(USER_LED, true);
+    gpio_put(USER_LED, 0); // initialize to low initially
+}
+
+void init_gpio_irq() {
+    u_int32_t mask = (0b1 << PIN_LEFT_BTN) | (0b1 << PIN_JOYSTICK_BTN) | (0b1 << PIN_RIGHT_BTN);
+    gpio_add_raw_irq_handler_masked(mask, gpio_isr);
+    // enable BANK0 IRQ interrupt
+    irq_set_enabled(IO_IRQ_BANK0, true);
+    // enable the GPIO IRQ for both pins
+    gpio_set_irq_enabled(PIN_LEFT_BTN, GPIO_IRQ_EDGE_RISE, true);
+    gpio_set_irq_enabled(PIN_JOYSTICK_BTN, GPIO_IRQ_EDGE_RISE, true);
+    gpio_set_irq_enabled(PIN_RIGHT_BTN, GPIO_IRQ_EDGE_RISE, true);
+}
+
+void gpio_isr() {
+    if (gpio_get_irq_event_mask(PIN_LEFT_BTN) & GPIO_IRQ_EDGE_RISE) {
+       gpio_acknowledge_irq(PIN_LEFT_BTN, GPIO_IRQ_EDGE_RISE);
+       // handle the IRQ
+       // turn on user light
+       gpio_put(USER_LED, 1);
+
+    } else if (gpio_get_irq_event_mask(PIN_JOYSTICK_BTN) &  GPIO_IRQ_EDGE_RISE) {
+       gpio_acknowledge_irq(PIN_JOYSTICK_BTN, GPIO_IRQ_EDGE_RISE);
+      // handle the IRQ
+      gpio_put(USER_LED, 1);
+    } else if (gpio_get_irq_event_mask(PIN_RIGHT_BTN) &  GPIO_IRQ_EDGE_RISE) {
+       gpio_acknowledge_irq(PIN_RIGHT_BTN, GPIO_IRQ_EDGE_RISE);
+      // handle the IRQ
+      gpio_put(USER_LED, 1);
+    }
+
+    // flash the light on for 5ms
+    // one shot timer
+    init_led_timer();
+}
+
+init_led_timer(){
+  int ALARM_NUM1 = 1;
+  hw_set_bits(&timer0_hw->inte, 1u << ALARM_NUM1);
+
+  int ALARM_IRQ1 = timer_hardware_alarm_get_irq_num(timer0_hw, ALARM_NUM1);
+  irq_set_exclusive_handler(ALARM_IRQ1, led_isr);
+
+  irq_set_enabled(ALARM_IRQ1, true);
+
+  uint32_t delay1 = 5000;
+  uint64_t target1 = timer0_hw->timerawl + delay1;
+
+  timer0_hw->alarm[ALARM_NUM1] = (uint32_t) target1;
+}
+
+led_isr(){
+  hw_clear_bits(&timer0_hw->intr, 1u << 1);
+
+  uint32_t mask = 1u << USER_LED;
+  gpio_put(USER_LED, 0);
+}
+
+
+//--------------------------------------------------------------------+
+// Blinking Task
+//--------------------------------------------------------------------+
 
 //--------------------------------------------------------------------+
 // MACRO CONSTANT TYPEDEF PROTYPES
@@ -195,17 +225,93 @@ void update_cursor() {
  * - 2500 ms : device is suspended
  */
 enum  {
-  BLINK_NOT_MOUNTED = 250,
-  BLINK_MOUNTED = 1000,
-  BLINK_SUSPENDED = 2500,
+  BLINK_NOT_MOUNTED = 5000,
+  BLINK_MOUNTED = 10000,
+  BLINK_SUSPENDED = 20000,
 };
 
-static uint32_t blink_interval_ms = BLINK_NOT_MOUNTED;
+static uint32_t blink_interval_us = BLINK_NOT_MOUNTED;
 
-void led_blinking_task(void);
 void hid_task(void);
 
+void init_pwm_static(uint32_t period, uint32_t duty_cycle) {
+    // fill in
+    gpio_set_function(3, GPIO_FUNC_PWM);
+    gpio_set_function(4, GPIO_FUNC_PWM);
+    gpio_set_function(5, GPIO_FUNC_PWM);
 
+    uint slice_num1 = pwm_gpio_to_slice_num(3);
+    uint slice_num2 = pwm_gpio_to_slice_num(4);
+
+    pwm_set_clkdiv(slice_num1, 150);
+    pwm_set_clkdiv(slice_num2, 150);
+
+    pwm_set_wrap(slice_num1, period-1);
+    pwm_set_wrap(slice_num2, period-1);
+
+    pwm_set_chan_level(slice_num1, 1, duty_cycle);
+    pwm_set_chan_level(slice_num2, 0, duty_cycle);
+    pwm_set_chan_level(slice_num2, 1, duty_cycle);
+
+    pwm_set_enabled(slice_num1, true);
+    pwm_set_enabled(slice_num2, true);
+}
+
+void pwm_breathing() {
+    // fill in
+    uint slice_num1 = pwm_gpio_to_slice_num(3);
+
+    pwm_clear_irq(slice_num1);
+
+    if(dir == 0 && duty_cycle == 100){
+        color++;
+        color %= 3;
+    }
+
+    if(duty_cycle == 100 && dir == 0){
+        dir = 1;
+    }else if(duty_cycle == 0 && dir == 1){
+        dir = 0;
+    }
+
+    if(dir == 0){
+        duty_cycle++;
+    }else{
+        duty_cycle--;
+    }
+
+    int slice_num = (color == 1 || color == 2) ? 2 : 1;
+
+    // set the chosen color's duty cycle to the ratio of the duty cycle in terms of frequency
+    uint16_t current_period = pwm_hw->slice[slice_num].top;
+
+    pwm_set_gpio_level(color + 3, (duty_cycle * current_period / 100));
+}
+
+void init_pwm_irq() {
+    // fill in
+    uint slice_num1 = pwm_gpio_to_slice_num(3);
+    uint slice_num2 = pwm_gpio_to_slice_num(4);
+
+    //why don't we do the process for slice 11
+
+    pwm_irqn_set_slice_enabled(0, slice_num1, true);
+
+    irq_set_exclusive_handler(PWM_IRQ_WRAP_0, pwm_breathing);
+    
+    irq_set_enabled(PWM_IRQ_WRAP_0, true);
+
+    // get current period of PWM slice associated with GP37
+    uint16_t current_period = pwm_hw->slice[slice_num1].top;
+
+    duty_cycle = 100;
+    dir = 1;
+
+    pwm_set_chan_level(slice_num1, 1, current_period);
+    pwm_set_chan_level(slice_num2, 0, current_period);
+    pwm_set_chan_level(slice_num2, 1, current_period);
+
+}
 
 //--------------------------------------------------------------------+
 // Device callbacks
@@ -214,13 +320,23 @@ void hid_task(void);
 // Invoked when device is mounted
 void tud_mount_cb(void)
 {
-  blink_interval_ms = BLINK_MOUNTED;
+  blink_interval_us = BLINK_MOUNTED;
+  
+  uint slice_num1 = pwm_gpio_to_slice_num(3);
+  uint slice_num2 = pwm_gpio_to_slice_num(4);
+  pwm_set_wrap(slice_num1, blink_interval_us-1);
+  pwm_set_wrap(slice_num2, blink_interval_us-1);
 }
 
 // Invoked when device is unmounted
 void tud_umount_cb(void)
 {
-  blink_interval_ms = BLINK_NOT_MOUNTED;
+  blink_interval_us = BLINK_NOT_MOUNTED;
+
+  uint slice_num1 = pwm_gpio_to_slice_num(3);
+  uint slice_num2 = pwm_gpio_to_slice_num(4);
+  pwm_set_wrap(slice_num1, blink_interval_us-1);
+  pwm_set_wrap(slice_num2, blink_interval_us-1);
 }
 
 // Invoked when usb bus is suspended
@@ -229,13 +345,23 @@ void tud_umount_cb(void)
 void tud_suspend_cb(bool remote_wakeup_en)
 {
   (void) remote_wakeup_en;
-  blink_interval_ms = BLINK_SUSPENDED;
+  blink_interval_us = BLINK_SUSPENDED;
+
+  uint slice_num1 = pwm_gpio_to_slice_num(3);
+  uint slice_num2 = pwm_gpio_to_slice_num(4);
+  pwm_set_wrap(slice_num1, blink_interval_us-1);
+  pwm_set_wrap(slice_num2, blink_interval_us-1);
 }
 
 // Invoked when usb bus is resumed
 void tud_resume_cb(void)
 {
-  blink_interval_ms = tud_mounted() ? BLINK_MOUNTED : BLINK_NOT_MOUNTED;
+  blink_interval_us = tud_mounted() ? BLINK_MOUNTED : BLINK_NOT_MOUNTED;
+
+  uint slice_num1 = pwm_gpio_to_slice_num(3);
+  uint slice_num2 = pwm_gpio_to_slice_num(4);
+  pwm_set_wrap(slice_num1, blink_interval_us-1);
+  pwm_set_wrap(slice_num2, blink_interval_us-1);
 }
 
 
@@ -244,115 +370,57 @@ void tud_resume_cb(void)
 // USB HID
 //--------------------------------------------------------------------+
 
-static void send_hid_report(uint8_t report_id, uint32_t btn)
+static void send_hid_report(uint32_t btn)
 {
   // skip if hid is not ready yet
   if ( !tud_hid_ready() ) return;
 
-  // general example for multiple hid devices
-  switch(report_id)
-  {
-    case REPORT_ID_KEYBOARD:
-    {
-      // use to avoid send multiple consecutive zero report for keyboard
-      static bool has_keyboard_key = false;
+  int8_t dx=0, dy=0;
+  read_joystick(&dx, &dy);
 
-      if ( btn )
-      {
-        uint8_t keycode[6] = { 0 };
-        keycode[0] = HID_KEY_A;
+  bool left   = (gpio_get(PIN_LEFT_BTN) == 0);
+  bool right  = (gpio_get(PIN_RIGHT_BTN) == 0);
+  bool middle = (gpio_get(PIN_JOYSTICK_BTN) == 0);
 
-        tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, keycode);
-        has_keyboard_key = true;
-      }else
-      {
-        // send empty key report if previously has key pressed
-        if (has_keyboard_key) tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, NULL);
-        has_keyboard_key = false;
-      }
-    }
-    break;
+  uint8_t buttons = 0;
+  if (left)   buttons |= 0x01;
+  if (right)  buttons |= 0x02;
+  if (middle) buttons |= 0x04;
 
-    case REPORT_ID_MOUSE:
-    {
-      int8_t const delta = 5;
-    
-
-
-      // no button, right + down, no scroll, no pan
-      tud_hid_mouse_report(REPORT_ID_MOUSE, 0x00, delta, delta, 0, 0);
-    }
-    break;
-
-    case REPORT_ID_CONSUMER_CONTROL:
-    {
-      // use to avoid send multiple consecutive zero report
-      static bool has_consumer_key = false;
-
-      if ( btn )
-      {
-        // volume down
-        uint16_t volume_down = HID_USAGE_CONSUMER_VOLUME_DECREMENT;
-        tud_hid_report(REPORT_ID_CONSUMER_CONTROL, &volume_down, 2);
-        has_consumer_key = true;
-      }else
-      {
-        // send empty key report (release key) if previously has key pressed
-        uint16_t empty_key = 0;
-        if (has_consumer_key) tud_hid_report(REPORT_ID_CONSUMER_CONTROL, &empty_key, 2);
-        has_consumer_key = false;
-      }
-    }
-    break;
-
-    case REPORT_ID_GAMEPAD:
-    {
-      // use to avoid send multiple consecutive zero report for keyboard
-      static bool has_gamepad_key = false;
-
-      hid_gamepad_report_t report =
-      {
-        .x   = 0, .y = 0, .z = 0, .rz = 0, .rx = 0, .ry = 0,
-        .hat = 0, .buttons = 0
-      };
-
-      if ( btn )
-      {
-        report.hat = GAMEPAD_HAT_UP;
-        report.buttons = GAMEPAD_BUTTON_A;
-        tud_hid_report(REPORT_ID_GAMEPAD, &report, sizeof(report));
-
-        has_gamepad_key = true;
-      }else
-      {
-        report.hat = GAMEPAD_HAT_CENTERED;
-        report.buttons = 0;
-        if (has_gamepad_key) tud_hid_report(REPORT_ID_GAMEPAD, &report, sizeof(report));
-        has_gamepad_key = false;
-      }
-    }
-    break;
-
-    default: break;
-  }
+  tud_hid_mouse_report(0, buttons, dx, dy, 0, 0);
 }
 
 
 // Every 10ms, we will sent 1 report for each HID profile (keyboard, mouse etc ..)
 // tud_hid_report_complete_cb() is used to send the next report after previous one is complete
-void hid_task(void)
-{
+
+void init_hid_task_timer() {
   // Poll every 10ms
-  const uint32_t interval_ms = 10;
-  static uint32_t start_ms = 0;
 
-  if ( board_millis() - start_ms < interval_ms) return; // not enough time
-  start_ms += interval_ms;
+  int ALARM_NUM0 = 0;
+  hw_set_bits(&timer0_hw->inte, 1u << ALARM_NUM0);
 
-  uint32_t const btn = board_button_read();
+  int ALARM_IRQ0 = timer_hardware_alarm_get_irq_num(timer0_hw, ALARM_NUM0);
+  irq_set_exclusive_handler(ALARM_IRQ0, hid_report_isr);
+
+  irq_set_enabled(ALARM_IRQ0, true);
+
+  uint32_t delay0 = 10000;
+  uint64_t target0 = timer0_hw->timerawl + delay0;
+
+  timer0_hw->alarm[ALARM_NUM0] = (uint32_t) target0;
+
+}
+
+void hid_report_isr(){
+  // acknowledge interrupt
+  hw_clear_bits(&timer0_hw->intr, 1u << 0);
+
+  // send hid report
+  uint32_t const any_pressed = (gpio_get(PIN_LEFT_BTN) & gpio_get(PIN_RIGHT_BTN) & gpio_get(PIN_JOYSTICK_BTN)) == 0;
 
   // Remote wakeup
-  if ( tud_suspended() && btn )
+  if ( tud_suspended() && any_pressed)
   {
     // Wake up host if we are in suspend mode
     // and REMOTE_WAKEUP feature is enabled by host
@@ -360,26 +428,22 @@ void hid_task(void)
   }else
   {
     // Send the 1st of report chain, the rest will be sent by tud_hid_report_complete_cb()
-    send_hid_report(REPORT_ID_KEYBOARD, btn);
+    send_hid_report(any_pressed);
   }
+
+  // reset timer
+  uint32_t delay0 = 10000;
+  uint64_t target0 = timer0_hw->timerawl + delay0;
+  timer0_hw->alarm[0] = (uint32_t) target0;
 }
 
+// removed
 // Invoked when sent REPORT successfully to host
 // Application can use this to send the next report
 // Note: For composite reports, report[0] is report ID
-void tud_hid_report_complete_cb(uint8_t instance, uint8_t const* report, uint16_t len)
-{
-  (void) instance;
-  (void) len;
+//void tud_hid_report_complete_cb(uint8_t instance, uint8_t const* report, uint16_t len)
 
-  uint8_t next_report_id = report[0] + 1u;
-
-  if (next_report_id < REPORT_ID_COUNT)
-  {
-    send_hid_report(next_report_id, board_button_read());
-  }
-}
-
+// not needed
 // Invoked when received GET_REPORT control request
 // Application must fill buffer report's content and return its length.
 // Return zero will cause the stack to STALL request
@@ -397,54 +461,39 @@ uint16_t tud_hid_get_report_cb(uint8_t instance, uint8_t report_id, hid_report_t
 
 // Invoked when received SET_REPORT control request or
 // received data on OUT endpoint ( Report ID = 0, Type = 0 )
-void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t const* buffer, uint16_t bufsize)
-{
-  (void) instance;
-
-  if (report_type == HID_REPORT_TYPE_OUTPUT)
-  {
-    // Set keyboard LED e.g Capslock, Numlock etc...
-    if (report_id == REPORT_ID_KEYBOARD)
-    {
-      // bufsize should be (at least) 1
-      if ( bufsize < 1 ) return;
-
-      uint8_t const kbd_leds = buffer[0];
-
-      if (kbd_leds & KEYBOARD_LED_CAPSLOCK)
-      {
-        // Capslock On: disable blink, turn led on
-        blink_interval_ms = 0;
-        board_led_write(true);
-      }else
-      {
-        // Caplocks Off: back to normal blink
-        board_led_write(false);
-        blink_interval_ms = BLINK_MOUNTED;
-      }
-    }
-  }
-}
+// void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t const* buffer, uint16_t bufsize)
 
 
 //--------------------------------------------------------------------+
 // BLINKING TASK
 //--------------------------------------------------------------------+
-void led_blinking_task(void)
-{
-  static uint32_t start_ms = 0;
-  static bool led_state = false;
+/*
+init_led_timer(){
+  int ALARM_NUM1 = 1;
+  hw_set_bits(&timer0_hw->inte, 1u << ALARM_NUM1);
 
-  // blink is disabled
-  if (!blink_interval_ms) return;
+  int ALARM_IRQ1 = timer_hardware_alarm_get_irq_num(timer0_hw, ALARM_NUM1);
+  irq_set_exclusive_handler(ALARM_IRQ1, led_isr);
 
-  // Blink every interval ms
-  if ( board_millis() - start_ms < blink_interval_ms) return; // not enough time
-  start_ms += blink_interval_ms;
+  irq_set_enabled(ALARM_IRQ1, true);
 
-  board_led_write(led_state);
-  led_state = 1 - led_state; // toggle
+  uint32_t delay1 = blink_interval_us;
+  uint64_t target1 = timer0_hw->timerawl + delay1;
+
+  timer0_hw->alarm[ALARM_NUM1] = (uint32_t) target1;
 }
+
+led_isr(){
+  hw_clear_bits(&timer0_hw->intr, 1u << 1);
+
+  uint32_t mask = 1u << USER_LED;
+  gpio_xor_mask(mask);
+
+  uint32_t delay1 = blink_interval_us;
+  uint64_t target1 = timer0_hw->timerawl + delay1;
+  timer0_hw->alarm[1] = (uint32_t) target1;
+}
+*/
 
 /******************************************************************************************************/
 /******************************************************************************************************/
@@ -501,16 +550,24 @@ int main(void) {
 
   // implementing joystick and buttons
   init_joystick();
-  init_color_buttons();
+  init_buttons();
+
+  init_hid_task_timer();
+  
+  init_user_led();
+  init_gpio_irq();
+
+  init_pwm_static(blink_interval_us, blink_interval_us / 2); // Start out with 500/1000, 50%
+  init_pwm_irq(); // Initialize PWM IRQ for variable duty cycle
 
   while (1) {
     // USB: Process USB tasks if any
     // This will handle USB events like setup requests, data transfers, etc.
     tud_task();
 
-    led_blinking_task();
+    //led_blinking_task();
 
-    hid_task();
+    //hid_task();
 
     // A good practice would be to call this periodically, or 
     // have the RP2350's second core handle it.  
