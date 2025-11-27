@@ -124,11 +124,11 @@ static void init_buttons(void)
 static void read_joystick(int8_t *dx_out, int8_t *dy_out)
 {
     adc_select_input(0);
-    sleep_us(10);
+    //sleep_us(10);
     uint16_t adc_y = adc_read();
 
     adc_select_input(1);
-    sleep_us(10);
+    //sleep_us(10);
     uint16_t adc_x = adc_read();
 
     int8_t dx = 0, dy = 0;
@@ -148,6 +148,7 @@ static void read_joystick(int8_t *dx_out, int8_t *dy_out)
 //--------------------------------------------------------------------+
 // USER LED
 //--------------------------------------------------------------------+
+/*
 void init_user_led() {
     // initialize user led
     gpio_init(USER_LED);
@@ -209,7 +210,7 @@ led_isr(){
   uint32_t mask = 1u << USER_LED;
   gpio_put(USER_LED, 0);
 }
-
+*/
 
 //--------------------------------------------------------------------+
 // Blinking Task
@@ -370,7 +371,7 @@ void tud_resume_cb(void)
 // USB HID
 //--------------------------------------------------------------------+
 
-static void send_hid_report(uint32_t btn)
+static void send_hid_report(uint8_t report_id, uint32_t btn)
 {
   // skip if hid is not ready yet
   if ( !tud_hid_ready() ) return;
@@ -393,6 +394,31 @@ static void send_hid_report(uint32_t btn)
 
 // Every 10ms, we will sent 1 report for each HID profile (keyboard, mouse etc ..)
 // tud_hid_report_complete_cb() is used to send the next report after previous one is complete
+void hid_report_isr(){
+  // acknowledge interrupt
+  hw_clear_bits(&timer0_hw->intr, 1u << 0);
+
+  // send hid report
+  uint32_t const any_pressed = (gpio_get(PIN_LEFT_BTN) & gpio_get(PIN_RIGHT_BTN) & gpio_get(PIN_JOYSTICK_BTN)) == 0;
+
+  // Remote wakeup
+  if ( tud_suspended() && any_pressed)
+  {
+    // Wake up host if we are in suspend mode
+    // and REMOTE_WAKEUP feature is enabled by host
+    tud_remote_wakeup();
+  }else
+  {
+    // Send the 1st of report chain, the rest will be sent by tud_hid_report_complete_cb()
+    send_hid_report(REPORT_ID_MOUSE, any_pressed);
+  }
+
+  // reset timer
+  uint32_t delay0 = 10000;
+  uint64_t target0 = timer0_hw->timerawl + delay0;
+  timer0_hw->alarm[0] = (uint32_t) target0;
+}
+
 
 void init_hid_task_timer() {
   // Poll every 10ms
@@ -412,36 +438,24 @@ void init_hid_task_timer() {
 
 }
 
-void hid_report_isr(){
-  // acknowledge interrupt
-  hw_clear_bits(&timer0_hw->intr, 1u << 0);
-
-  // send hid report
-  uint32_t const any_pressed = (gpio_get(PIN_LEFT_BTN) & gpio_get(PIN_RIGHT_BTN) & gpio_get(PIN_JOYSTICK_BTN)) == 0;
-
-  // Remote wakeup
-  if ( tud_suspended() && any_pressed)
-  {
-    // Wake up host if we are in suspend mode
-    // and REMOTE_WAKEUP feature is enabled by host
-    tud_remote_wakeup();
-  }else
-  {
-    // Send the 1st of report chain, the rest will be sent by tud_hid_report_complete_cb()
-    send_hid_report(any_pressed);
-  }
-
-  // reset timer
-  uint32_t delay0 = 10000;
-  uint64_t target0 = timer0_hw->timerawl + delay0;
-  timer0_hw->alarm[0] = (uint32_t) target0;
-}
-
 // removed
 // Invoked when sent REPORT successfully to host
 // Application can use this to send the next report
 // Note: For composite reports, report[0] is report ID
-//void tud_hid_report_complete_cb(uint8_t instance, uint8_t const* report, uint16_t len)
+/*
+void tud_hid_report_complete_cb(uint8_t instance, uint8_t const* report, uint16_t len){
+  (void) instance;
+  (void) len;
+
+  uint8_t next_report_id = report[0] + 1u;
+
+  if (next_report_id < (REPORT_ID_COUNT - 4))
+  {
+    uint32_t const any_pressed = (gpio_get(PIN_LEFT_BTN) & gpio_get(PIN_RIGHT_BTN) & gpio_get(PIN_JOYSTICK_BTN)) == 0;
+    send_hid_report(next_report_id, any_pressed);
+  }
+}
+*/
 
 // not needed
 // Invoked when received GET_REPORT control request
@@ -461,8 +475,36 @@ uint16_t tud_hid_get_report_cb(uint8_t instance, uint8_t report_id, hid_report_t
 
 // Invoked when received SET_REPORT control request or
 // received data on OUT endpoint ( Report ID = 0, Type = 0 )
-// void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t const* buffer, uint16_t bufsize)
+void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t const* buffer, uint16_t bufsize)
+{
+  (void) instance;
 
+  /*
+  if (report_type == HID_REPORT_TYPE_OUTPUT)
+  {
+    // Set keyboard LED e.g Capslock, Numlock etc...
+    if (report_id == REPORT_ID_KEYBOARD)
+    {
+      // bufsize should be (at least) 1
+      if ( bufsize < 1 ) return;
+
+      uint8_t const kbd_leds = buffer[0];
+
+      if (kbd_leds & KEYBOARD_LED_CAPSLOCK)
+      {
+        // Capslock On: disable blink, turn led on
+        blink_interval_ms = 0;
+        board_led_write(true);
+      }else
+      {
+        // Caplocks Off: back to normal blink
+        board_led_write(false);
+        blink_interval_ms = BLINK_MOUNTED;
+      }
+    }
+  }
+  */
+}
 
 //--------------------------------------------------------------------+
 // BLINKING TASK
@@ -492,6 +534,30 @@ led_isr(){
   uint32_t delay1 = blink_interval_us;
   uint64_t target1 = timer0_hw->timerawl + delay1;
   timer0_hw->alarm[1] = (uint32_t) target1;
+}
+*/
+
+/*
+// debug repeating timer: print ADC/button/hid state every 500 ms
+static bool debug_timer_cb(struct repeating_timer *rt)
+{
+    (void) rt;
+
+    uint16_t raw_x = 0, raw_y = 0;
+    int8_t dx = 0, dy = 0;
+    read_joystick(&dx, &dy, &raw_x, &raw_y);
+
+    bool left   = (gpio_get(PIN_LEFT_BTN) == 0);
+    bool right  = (gpio_get(PIN_RIGHT_BTN) == 0);
+    bool middle = (gpio_get(PIN_JOYSTICK_BTN) == 0);
+
+    int mounted = tud_mounted() ? 1 : 0;
+    int hidready = tud_hid_ready() ? 1 : 0;
+
+    printf("MOUNTED=%d HID_READY=%d ADCX=%u ADCY=%u DX=%d DY=%d L=%d R=%d M=%d\n",
+           mounted, hidready, (unsigned)raw_x, (unsigned)raw_y, dx, dy, left?1:0, right?1:0, middle?1:0);
+
+    return true;
 }
 */
 
@@ -554,8 +620,8 @@ int main(void) {
 
   init_hid_task_timer();
   
-  init_user_led();
-  init_gpio_irq();
+  //init_user_led();
+  //init_gpio_irq();
 
   init_pwm_static(blink_interval_us, blink_interval_us / 2); // Start out with 500/1000, 50%
   init_pwm_irq(); // Initialize PWM IRQ for variable duty cycle
