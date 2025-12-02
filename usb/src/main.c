@@ -205,7 +205,7 @@ init_led_timer(){
   timer0_hw->alarm[ALARM_NUM1] = (uint32_t) target1;
 }
 */
-
+/*
 led_isr(){
   hw_clear_bits(&timer0_hw->intr, 1u << 1);
 
