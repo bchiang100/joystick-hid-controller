@@ -139,7 +139,8 @@ static void read_joystick(int8_t *dx_out, int8_t *dy_out)
     if (adc_y < 2048 - DEADZONE_RADIUS) dy = -MOVEMENT_SPEED;
     else if (adc_y > 2048 + DEADZONE_RADIUS) dy = MOVEMENT_SPEED;
 
-    //dy = -dy; // push up -> cursor up
+    dy = -dy; // push up -> cursor up
+    dx = -dx;
 
     *dx_out = dx;
     *dy_out = dy;
@@ -204,7 +205,7 @@ init_led_timer(){
   timer0_hw->alarm[ALARM_NUM1] = (uint32_t) target1;
 }
 */
-
+/*
 led_isr(){
   hw_clear_bits(&timer0_hw->intr, 1u << 1);
 
