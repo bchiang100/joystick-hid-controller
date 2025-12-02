@@ -38,6 +38,8 @@
 #define RESET 39
 #define SELECTOR_COLOR 0x01FF
 
+# define USER_LED 2
+
 #define DEADZONE_RADIUS 500
 #define MOVEMENT_SPEED 1
 
@@ -267,9 +269,50 @@ void display_mode(bool is_drawing) {
     }
 }
 
+void init_user_led() {
+    // initialize user led
+    gpio_init(USER_LED);
+    gpio_set_dir(USER_LED, true);
+    gpio_put(USER_LED, 0); // initialize to low initially
+}
+
+void init_gpio_irq() {
+    u_int32_t mask = (0b1 << PIN_NEXT_BTN) | (0b1 << PIN_JOYSTICK_BTN) | (0b1 << RESET);
+    gpio_add_raw_irq_handler_masked(mask, gpio_isr);
+    // enable BANK0 IRQ interrupt
+    irq_set_enabled(IO_IRQ_BANK0, true);
+    // enable the GPIO IRQ for both pins
+    gpio_set_irq_enabled(PIN_NEXT_BTN, GPIO_IRQ_EDGE_RISE, true);
+    gpio_set_irq_enabled(PIN_JOYSTICK_BTN, GPIO_IRQ_EDGE_RISE, true);
+    gpio_set_irq_enabled(RESET, GPIO_IRQ_EDGE_RISE, true);
+}
+
+void gpio_isr() {
+    if (gpio_get_irq_event_mask(PIN_NEXT_BTN) & GPIO_IRQ_EDGE_RISE) {
+       gpio_acknowledge_irq(PIN_NEXT_BTN, GPIO_IRQ_EDGE_RISE);
+       // handle the IRQ
+       // turn on user light
+       gpio_put(USER_LED, 1);
+
+    } else if (gpio_get_irq_event_mask(PIN_JOYSTICK_BTN) &  GPIO_IRQ_EDGE_RISE) {
+       gpio_acknowledge_irq(PIN_JOYSTICK_BTN, GPIO_IRQ_EDGE_RISE);
+      // handle the IRQ
+      gpio_put(USER_LED, 1);
+    } else if (gpio_get_irq_event_mask(RESET) &  GPIO_IRQ_EDGE_RISE) {
+       gpio_acknowledge_irq(RESET, GPIO_IRQ_EDGE_RISE);
+      // handle the IRQ
+      gpio_put(USER_LED, 1);
+    }
+    // flash the light on for 5ms
+    sleep_ms(5);
+    gpio_put(USER_LED, 0);
+}
+
 int main() {
     stdio_init_all();
     init_spi_lcd();
+    init_user_led();
+    init_gpio_irq();
 
     LCD_Setup();
     LCD_Clear(0);
