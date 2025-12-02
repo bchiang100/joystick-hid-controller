@@ -74,7 +74,7 @@ try changing the first byte of tud_network_mac_address[] below from 0x02 to 0x00
 #define PIN_RIGHT_BTN      39  // Right click (active-low)
 
 #define DEADZONE_RADIUS    500
-#define MOVEMENT_SPEED     1
+#define MOVEMENT_SPEED     3
 
 // pin was originally assigned to user led
 #define USER_LED          2
@@ -139,7 +139,7 @@ static void read_joystick(int8_t *dx_out, int8_t *dy_out)
     if (adc_y < 2048 - DEADZONE_RADIUS) dy = -MOVEMENT_SPEED;
     else if (adc_y > 2048 + DEADZONE_RADIUS) dy = MOVEMENT_SPEED;
 
-    dy = -dy; // push up -> cursor up
+    //dy = -dy; // push up -> cursor up
 
     *dx_out = dx;
     *dy_out = dy;
@@ -388,7 +388,17 @@ static void send_hid_report(uint8_t report_id, uint32_t btn)
   if (right)  buttons |= 0x02;
   if (middle) buttons |= 0x04;
 
-  tud_hid_mouse_report(0, buttons, dx, dy, 0, 0);
+  /*
+  //debugging
+  int mounted = tud_mounted() ? 1 : 0;
+  int hidready = tud_hid_ready() ? 1 : 0;
+
+  printf("MOUNTED=%d HID_READY=%d DX=%d DY=%d L=%d R=%d M=%d\n", mounted, hidready, dx, dy, left?1:0, right?1:0, middle?1:0);
+  //debugging
+  */
+  
+
+  tud_hid_mouse_report(REPORT_ID_MOUSE, buttons, dx, dy, 0, 0);
 }
 
 
@@ -399,7 +409,9 @@ void hid_report_isr(){
   hw_clear_bits(&timer0_hw->intr, 1u << 0);
 
   // send hid report
-  uint32_t const any_pressed = (gpio_get(PIN_LEFT_BTN) & gpio_get(PIN_RIGHT_BTN) & gpio_get(PIN_JOYSTICK_BTN)) == 0;
+  uint32_t any_pressed = (!gpio_get(PIN_LEFT_BTN) || !gpio_get(PIN_RIGHT_BTN) || !gpio_get(PIN_JOYSTICK_BTN));
+
+  //uint32_t const any_pressed = (gpio_get(PIN_LEFT_BTN) & gpio_get(PIN_RIGHT_BTN) & gpio_get(PIN_JOYSTICK_BTN)) == 0;
 
   // Remote wakeup
   if ( tud_suspended() && any_pressed)
@@ -414,14 +426,14 @@ void hid_report_isr(){
   }
 
   // reset timer
-  uint32_t delay0 = 10000;
+  uint32_t delay0 = 5000;
   uint64_t target0 = timer0_hw->timerawl + delay0;
   timer0_hw->alarm[0] = (uint32_t) target0;
 }
 
 
 void init_hid_task_timer() {
-  // Poll every 10ms
+  // Poll every 5ms
 
   int ALARM_NUM0 = 0;
   hw_set_bits(&timer0_hw->inte, 1u << ALARM_NUM0);
@@ -431,7 +443,7 @@ void init_hid_task_timer() {
 
   irq_set_enabled(ALARM_IRQ0, true);
 
-  uint32_t delay0 = 10000;
+  uint32_t delay0 = 5000;
   uint64_t target0 = timer0_hw->timerawl + delay0;
 
   timer0_hw->alarm[ALARM_NUM0] = (uint32_t) target0;
@@ -602,7 +614,7 @@ void board_init() {
 }
 
 
-int main(void) {
+int main(void) { 
   stdio_init_all();
 
   /* initialize TinyUSB */
@@ -623,8 +635,8 @@ int main(void) {
   //init_user_led();
   //init_gpio_irq();
 
-  init_pwm_static(blink_interval_us, blink_interval_us / 2); // Start out with 500/1000, 50%
-  init_pwm_irq(); // Initialize PWM IRQ for variable duty cycle
+  //init_pwm_static(blink_interval_us, blink_interval_us / 2); // Start out with 500/1000, 50%
+  //init_pwm_irq(); // Initialize PWM IRQ for variable duty cycle
 
   while (1) {
     // USB: Process USB tasks if any
