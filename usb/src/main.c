@@ -139,7 +139,8 @@ static void read_joystick(int8_t *dx_out, int8_t *dy_out)
     if (adc_y < 2048 - DEADZONE_RADIUS) dy = -MOVEMENT_SPEED;
     else if (adc_y > 2048 + DEADZONE_RADIUS) dy = MOVEMENT_SPEED;
 
-    //dy = -dy; // push up -> cursor up
+    dy = -dy; // push up -> cursor up
+    dx = -dx;
 
     *dx_out = dx;
     *dy_out = dy;
