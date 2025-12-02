@@ -74,7 +74,7 @@ try changing the first byte of tud_network_mac_address[] below from 0x02 to 0x00
 #define PIN_RIGHT_BTN      39  // Right click (active-low)
 
 #define DEADZONE_RADIUS    500
-#define MOVEMENT_SPEED     1
+#define MOVEMENT_SPEED     3
 
 // pin was originally assigned to user led
 #define USER_LED          2
@@ -203,6 +203,7 @@ init_led_timer(){
 
   timer0_hw->alarm[ALARM_NUM1] = (uint32_t) target1;
 }
+*/
 
 led_isr(){
   hw_clear_bits(&timer0_hw->intr, 1u << 1);
@@ -393,9 +394,10 @@ static void send_hid_report(uint8_t report_id, uint32_t btn)
   int mounted = tud_mounted() ? 1 : 0;
   int hidready = tud_hid_ready() ? 1 : 0;
 
-  //printf("MOUNTED=%d HID_READY=%d DX=%d DY=%d L=%d R=%d M=%d\n", mounted, hidready, dx, dy, left?1:0, right?1:0, middle?1:0);
+  printf("MOUNTED=%d HID_READY=%d DX=%d DY=%d L=%d R=%d M=%d\n", mounted, hidready, dx, dy, left?1:0, right?1:0, middle?1:0);
   //debugging
   */
+  
 
   tud_hid_mouse_report(REPORT_ID_MOUSE, buttons, dx, dy, 0, 0);
 }
@@ -613,7 +615,7 @@ void board_init() {
 }
 
 
-int main(void) {
+int main(void) { 
   stdio_init_all();
 
   /* initialize TinyUSB */
@@ -634,8 +636,8 @@ int main(void) {
   //init_user_led();
   //init_gpio_irq();
 
-  init_pwm_static(blink_interval_us, blink_interval_us / 2); // Start out with 500/1000, 50%
-  init_pwm_irq(); // Initialize PWM IRQ for variable duty cycle
+  //init_pwm_static(blink_interval_us, blink_interval_us / 2); // Start out with 500/1000, 50%
+  //init_pwm_irq(); // Initialize PWM IRQ for variable duty cycle
 
   while (1) {
     // USB: Process USB tasks if any
